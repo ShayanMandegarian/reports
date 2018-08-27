@@ -9,7 +9,7 @@
   <title>Reports</title>
 
   <style>
-  .btn-custom {
+  .btn-custom { /* css for purple search button */
           background-color:#8f61e5 !important;
           color: #fff !important;
   }
@@ -31,13 +31,13 @@
           <div class="col-md-12">
             <div class="form-group">
               <span>Date:</span>
-              <input type="date" min="2000-01-01" max="2050-01-01" name="date" minlength="1" size="256" placeholder="mm/dd/yyyy" class="form-control"
+              <input type="date" min="2000-01-01" max="2050-01-01" name="date" placeholder="mm/dd/yyyy" class="form-control"
               required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity('')">
             </div>
             <div class="form-group">
               <span>Route: (optional)</span>
-              <select name="route[]" style="max-width:500%;" class="form-control" multiple>
-                <option value="Apple">Apple</option>
+              <select name="route[]" class="form-control" multiple>
+                <option value="Apple">Apple</option> <!-- All the routes marked as active -->
                 <option value="Facebook">Facebook</option>
                 <option value="Facebook*">Facebook*</option>
                 <option value="Genentech">Genentech</option>
@@ -73,6 +73,6 @@
       </div>
     </div>
   </div>
-  <?PHP include 'table.html.php';?>
+  <?PHP include 'table.html.php'; // puts the report on the same page?>
 </body>
 </html>
