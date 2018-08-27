@@ -8,42 +8,66 @@
   <meta charset="utf-8" />
   <title>Reports</title>
 
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('#search').click(function() {
-        goUrl = 'http://localhost/pt_admin/server/index.php/reports'
-      });
-    });
-  </script>
+  <style>
+  #myForm select {
+    width:1550px; }
+  </style>
 
 </head>
 
 <body>
-  <h2>Search reports:</h2>
-
   <div class="wrapper">
     <div class="container-fluid">
       <div class="row">
         <div class="page-header clearfix">
-          <form action="http://localhost/pt_admin/server/index.php/reports" id="myForm" method="GET">
+          <div class="col-md-12">
+            <h2 class="pull-left">Search reports:</h2>
+          </div>
+          <form action="http://localhost/dashboard/server/index.php/reports" id="myForm" method="GET" onsubmit="setTimeout(function () { window.location.reload(); }, 10000)">
           <div class="col-md-12">
             <div class="form-group">
               <span>Date:</span>
-              <input type="date" name="date" minlength="1" size="256" placeholder="mm/dd/yyyy" class="form-control">
+              <input type="date" name="date" minlength="1" size="256" placeholder="mm/dd/yyyy" class="form-control" required>
             </div>
             <div class="form-group">
               <span>Route: (optional)</span>
-              <input type="text" name="route" size="256" class="form-control" placeholder="eg. MT01">
+              <select name="route[]" style="max-width:500%;" class="form-control" multiple>
+                <option value="Apple">Apple</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Facebook*">Facebook*</option>
+                <option value="Genentech">Genentech</option>
+                <option value="Google">Google</option>
+                <option value="Intel">Intel</option>
+                <option value="MT01">MT01</option>
+                <option value="MT02">MT02</option>
+                <option value="MT03">MT03</option>
+                <option value="MT04">MT04</option>
+                <option value="MT05">MT05</option>
+                <option value="MT06">MT06</option>
+                <option value="MT08">MT08</option>
+                <option value="MT09">MT09</option>
+                <option value="MTtemp">MTtemp</option>
+                <option value="TF01">TF01</option>
+                <option value="TF02">TF02</option>
+                <option value="TF03">TF03</option>
+                <option value="TF04">TF04</option>
+                <option value="TF05">TF05</option>
+                <option value="TF06">TF06</option>
+                <option value="TF07">TF07</option>
+                <option value="TF08">TF08</option>
+                <option value="Oracle">Oracle</option>
+                <option value="Palantir">Palantir</option>
+                <option value="RWC">RWC</option>
+                <option value="StorageDonations">StorageDonations</option>
+              </select>
             </div>
-            <div><button class='btn btn-block btn-primary'>Search</button></div>
+            <div><button type="submit" class='btn btn-block btn-primary'>Search</button></div>
           </form>
-            <br>
-            <div><button type="button" onclick="location.href='http://localhost/dashboard/table'" class='btn btn-block btn-success'>Go To Latest Report</button></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <?PHP include 'table.html.php';?>
 </body>
 </html>
