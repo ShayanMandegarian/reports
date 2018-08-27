@@ -9,6 +9,10 @@
   <title>Reports</title>
 
   <style>
+  .btn-custom {
+          background-color:#8f61e5 !important;
+          color: #fff !important;
+  }
   #myForm select {
     width:1550px; }
   </style>
@@ -21,13 +25,14 @@
       <div class="row">
         <div class="page-header clearfix">
           <div class="col-md-12">
-            <h2 class="pull-left">Search reports:</h2>
+            <h2 class="pull-left">Search reports</h2>
           </div>
           <form action="http://localhost/dashboard/server/index.php/reports" id="myForm" method="GET" onsubmit="setTimeout(function () { window.location.reload(); }, 10000)">
           <div class="col-md-12">
             <div class="form-group">
               <span>Date:</span>
-              <input type="date" name="date" minlength="1" size="256" placeholder="mm/dd/yyyy" class="form-control" required>
+              <input type="date" min="2000-01-01" max="2050-01-01" name="date" minlength="1" size="256" placeholder="mm/dd/yyyy" class="form-control"
+              required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity('')">
             </div>
             <div class="form-group">
               <span>Route: (optional)</span>
@@ -61,7 +66,7 @@
                 <option value="StorageDonations">StorageDonations</option>
               </select>
             </div>
-            <div><button type="submit" class='btn btn-block btn-primary'>Search</button></div>
+            <div><button type="submit" class='btn btn-block btn-custom'>Search</button></div>
           </form>
           </div>
         </div>
