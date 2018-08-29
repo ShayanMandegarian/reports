@@ -15,19 +15,52 @@
   }
   #myForm select {
     width:1550px; }
-  </style>
 
+  #loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #CCCCFF;
+  border-radius: 50%;
+  border-top: 16px solid #8f61e5;
+  border-bottom: 16px solid #8f61e5;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 1.5s linear infinite;
+  animation: spin 1.5s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+  </style>
+  <script>
+  var subbed = 0;
+  </script>
 </head>
 
 <body>
-  <div class="wrapper">
+  <div id="loader"></div>
+  <div id="content" class="wrapper">
     <div class="container-fluid">
       <div class="row">
         <div class="page-header clearfix">
           <div class="col-md-12">
             <h2 class="pull-left">Search reports</h2>
           </div>
-          <form action="http://localhost/dashboard/server/index.php/reports" id="myForm" method="GET" onsubmit="setTimeout(function () { window.location.reload(); }, 10000)">
+           <!-- onsubmit="setTimeout(function () { window.location.reload(); }, 12000)" -->
+          <form action="http://localhost/dashboard/server/index.php/reports" id="myForm" method="GET" onclick="subbed = 1;">
           <div class="col-md-12">
             <div class="form-group">
               <span>Date:</span>
@@ -66,13 +99,48 @@
                 <option value="StorageDonations">StorageDonations</option>
               </select>
             </div>
-            <div><button type="submit" class='btn btn-block btn-custom'>Search</button></div>
+            <div><button id="buttin" type="submit" class='btn btn-block btn-custom'>Search</button></div>
           </form>
           </div>
         </div>
       </div>
     </div>
+    <?php
+    $valid = 0;
+    $link = mysqli_connect('localhost', 'root', '', 'ppt');
+    $result = mysqli_query($link, 'SELECT address, col2, col3, date, route FROM results ORDER BY route');
+    while ($row = mysqli_fetch_row($result)) {
+       $valid = 1;
+       $rows[] = $row;
+    }
+    include 'table.html.php';
+    ?>
   </div>
-  <?PHP include 'table.html.php'; // puts the report on the same page?>
+  <script>
+  function showLoad() {
+    console.log(subbed);
+    if (subbed == 1) {
+      console.log("biglulz");
+      jQuery('#content').fadeOut(0500);
+      jQuery('#loader').fadeIn(0500);
+      setTimeout(function () { window.location.reload(); }, 20000);
+    };
+  };
+  </script>
+  <script>
+    jQuery('#content').hide();
+    jQuery('#loader').show();
+    jQuery(document).ready(function() {
+        jQuery('#loader').fadeOut(1500);
+        jQuery('#content').fadeIn(1500);
+    });
+  </script>
+  <script>
+     var el = document.getElementById("buttin");
+     el.addEventListener("click", showLoad, false);
+
+     $("#buttin").on("click", showLoad());
+  </script>
+
 </body>
 </html>

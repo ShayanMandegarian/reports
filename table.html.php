@@ -8,39 +8,6 @@
   <title>Reports</title>
 </head>
 
-<?php
-
-$link = mysqli_connect('localhost', 'root');
-
-if(!mysqli_set_charset($link, 'utf8'))
-{
-  $error = 'Unable to decode database, not UTF-8.';
-  include 'err.html.php';
-  exit();
-}
-
-if(!mysqli_select_db($link, 'ppt'))
-{
-  $error = 'Unable to connect to the PurpleTie database.';
-  include 'err.html.php';
-  exit();
-}
-
-$result = mysqli_query($link, 'SELECT address, col2, col3, date, route FROM results');
-if (!$result)
-{
-  $error = 'Error fetching users: ' . mysqli_error($link);
-  include 'err.html.php';
-  exit();
-}
-$valid = 0;
-while ($row = mysqli_fetch_row($result)) {
-   $valid = 1;
-   $rows[] = $row;
-
-}
-?>
-
 <body>
   <div class="wrapper">
     <div class="container-fluid">
@@ -51,28 +18,72 @@ while ($row = mysqli_fetch_row($result)) {
             <?PHP if ($valid == 1)
                     echo "for ".$rows[0][3];
             ?></h2>
-            <table class="table table-boarded table-striped">
+            <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>Address</th>
-                  <th>Scanned</th>
-                  <th>Promised</th>
-                  <?PHP if ($valid == 1) {
-                         if ($rows[0][4] != '')
-                          echo "<th>Route</th>";
-                  }?>
+                  <th scope="col">Address</th>
+                  <th scope="col">Scanned</th>
+                  <th scope="col">Promised</th>
                 </tr>
               </thead>
               <tbody>
                 <?php if ($valid == 1) {
-                        foreach($rows as $row) { ?>
+                        $prevRoute = '';
+                        foreach($rows as $row) {
+                          $mismatch = 0;
+                          $route = $row[4];
+                          if (($row[1] != $row[2]) && ($row[2] != '')) {
+                            $mismatch = abs($row[1] - $row[2]);
+                          } ?>
                   <tbody>
-                    <tr>
-                      <?php echo "<td>". $row[0] ."</td>"; ?>
-                      <?php echo "<td>". $row[1] ."</td>"; ?>
-                      <?php echo "<td>". $row[2] ."</td>"; ?>
-                      <?php if ($row[4] != '')
-                              echo "<td>". $row[4] ."</td>"; ?>
+                      <?php if ($mismatch == 0) {
+                              if ($route != $prevRoute) {
+                                echo "<tr class='bg-dark text-white'>";
+                                echo "<td>".$route."</td>";
+                                echo "<td>----</td>";
+                                echo "<td>----</td>";
+                              }
+                              echo "<tr>";?>
+                        <?php echo "<td>". $row[0] ."</td>"; ?>
+                        <?php echo "<td>". $row[1] ."</td>"; ?>
+                        <?php echo "<td>". $row[2] ."</td>"; ?>
+                        <?php if ($row[4] != '') {
+                                // echo "<td>". $row[4] ."</td>";
+                                $prevRoute = $row[4];
+                              }
+                            }
+                            else if ($mismatch > 3){
+                              if ($route != $prevRoute) {
+                                echo "<tr class='bg-dark text-white'>";
+                                echo "<td>".$route."</td>";
+                                echo "<td>----</td>";
+                                echo "<td>----</td>";
+                              }
+                              echo "<tr class='table-danger'>";
+                              echo "<td>". $row[0] ."</td>";
+                              echo "<td>". $row[1] ."</td>";
+                              echo "<td>". $row[2] ."</td>";
+                              if ($row[4] != '') {
+                                // echo "<td>". $row[4] ."</td>";
+                                $prevRoute = $row[4];
+                              }
+                            }
+                            else {
+                              if ($route != $prevRoute) {
+                                echo "<tr class='bg-dark text-white'>";
+                                echo "<td>".$route."</td>";
+                                echo "<td>----</td>";
+                                echo "<td>----</td>";
+                              }
+                              echo "<tr class='table-warning'>";
+                              echo "<td>". $row[0] ."</td>";
+                              echo "<td>". $row[1] ."</td>";
+                              echo "<td>". $row[2] ."</td>";
+                              if ($row[4] != '') {
+                                // echo "<td>". $row[4] ."</td>";
+                                $prevRoute = $row[4];
+                              }
+                            }?>
                     </tr>
                   </tbody>
                 <?php }} ?>
