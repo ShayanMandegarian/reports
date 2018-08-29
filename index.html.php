@@ -30,8 +30,8 @@
   border-bottom: 16px solid #8f61e5;
   width: 120px;
   height: 120px;
-  -webkit-animation: spin 1.5s linear infinite;
-  animation: spin 1.5s linear infinite;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 @-webkit-keyframes spin {
@@ -47,6 +47,10 @@
   </style>
   <script>
   var subbed = 0;
+  var time = 12000;
+  window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+  }
   </script>
 </head>
 
@@ -57,19 +61,19 @@
       <div class="row">
         <div class="page-header clearfix">
           <div class="col-md-12">
-            <h2 class="pull-left">Search reports</h2>
+            <h2 class="pull-left">Search Reports</h2>
           </div>
            <!-- onsubmit="setTimeout(function () { window.location.reload(); }, 12000)" -->
-          <form action="http://localhost/dashboard/server/index.php/reports" id="myForm" method="GET" onclick="subbed = 1;">
+          <form action="http://localhost/dashboard/server/index.php/reports" id="myForm" method="GET">
           <div class="col-md-12">
-            <div class="form-group">
+            <div class="form-group" style="width:100%; box-sizing: border-box;">
               <span>Date:</span>
               <input type="date" min="2000-01-01" max="2050-01-01" name="date" placeholder="mm/dd/yyyy" class="form-control"
-              required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity('')">
+              required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity(''); subbed = 1;">
             </div>
             <div class="form-group">
-              <span>Route: (optional)</span>
-              <select name="route[]" class="form-control" multiple>
+              <span>Route: (optional) ctrl+click to unselect</span>
+              <select name="route[]" class="form-control" multiple style="width:100%; box-sizing: border-box;">
                 <option value="Apple">Apple</option> <!-- All the routes marked as active -->
                 <option value="Facebook">Facebook</option>
                 <option value="Facebook*">Facebook*</option>
@@ -99,7 +103,7 @@
                 <option value="StorageDonations">StorageDonations</option>
               </select>
             </div>
-            <div><button id="buttin" type="submit" class='btn btn-block btn-custom'>Search</button></div>
+            <div><button id="buttin" type="submit" style="width:100%; box-sizing: border-box;" class='btn btn-lg btn-custom'>Search</button></div>
           </form>
           </div>
         </div>
@@ -107,30 +111,36 @@
     </div>
     <?php
     $valid = 0;
-    $link = mysqli_connect('localhost', 'root', '', 'ppt');
-    $result = mysqli_query($link, 'SELECT address, col2, col3, date, route FROM results ORDER BY route');
-    while ($row = mysqli_fetch_row($result)) {
+    $row = json_decode(file_get_contents("server/results.json"), true);
+    $totalRow = json_decode(file_get_contents("server/totals.json"), true);
+    foreach($row as $line) {
        $valid = 1;
-       $rows[] = $row;
+       $rows[] = $line;
     }
+    // $link = mysqli_connect('localhost', 'root', '', 'ppt');
+    // $result = mysqli_query($link, 'SELECT address, col2, col3, date, route FROM results ORDER BY route');
+    // while ($row = mysqli_fetch_row($result)) {
+    //    $valid = 1;
+    //    $rows[] = $row;
+    // }
     include 'table.html.php';
     ?>
   </div>
   <script>
   function showLoad() {
-    console.log(subbed);
+    // console.log(subbed);
     if (subbed == 1) {
-      console.log("biglulz");
-      jQuery('#content').fadeOut(0500);
-      jQuery('#loader').fadeIn(0500);
-      setTimeout(function () { window.location.reload(); }, 20000);
+      // console.log("biglulz");
+      jQuery('#content').fadeOut(1500);
+      jQuery('#loader').fadeIn(1500);
+      setTimeout(function () { window.location.reload(); }, 15000);
     };
   };
   </script>
   <script>
-    jQuery('#content').hide();
+  //  jQuery('#content').hide();
     jQuery('#loader').show();
-    jQuery(document).ready(function() {
+    $(window).load(function() {
         jQuery('#loader').fadeOut(1500);
         jQuery('#content').fadeIn(1500);
     });

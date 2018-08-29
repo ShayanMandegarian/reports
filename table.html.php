@@ -16,7 +16,7 @@
           <div class="page-header clearfix">
             <h2 class="pull-left">Report Details
             <?PHP if ($valid == 1)
-                    echo "for ".$rows[0][3];
+                    echo "for ".date("m/d/Y", strtotime($rows[1]['date']));
             ?></h2>
             <table class="table table-hover">
               <thead>
@@ -24,69 +24,68 @@
                   <th scope="col">Address</th>
                   <th scope="col">Scanned</th>
                   <th scope="col">Promised</th>
+                  <!-- <th scope="col">Route</th> -->
+
                 </tr>
               </thead>
               <tbody>
                 <?php if ($valid == 1) {
                         $prevRoute = '';
+                        $i = 1;
                         foreach($rows as $row) {
                           $mismatch = 0;
-                          $route = $row[4];
-                          if (($row[1] != $row[2]) && ($row[2] != '')) {
-                            $mismatch = abs($row[1] - $row[2]);
+                          $route = $row['route'];
+                        if (($row['col2'] != $row['col3']) /*&& ($row[2] != '')*/) {
+                            $mismatch = abs($row['col2'] - $row['col3']);
                           } ?>
                   <tbody>
                       <?php if ($mismatch == 0) {
                               if ($route != $prevRoute) {
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
-                                echo "<td>----</td>";
-                                echo "<td>----</td>";
+                                if (array_key_exists($route, $totalRow)) {
+                                  echo "<td>".$totalRow[$route]['scan']."</td>";
+                                  echo "<td>".$totalRow[$route]['prom']."</td>";
+                                }
+                                else {
+                                  echo "<td>----</td>";
+                                  echo "<td>----</td>";
+                                }
                               }
                               echo "<tr>";?>
-                        <?php echo "<td>". $row[0] ."</td>"; ?>
-                        <?php echo "<td>". $row[1] ."</td>"; ?>
-                        <?php echo "<td>". $row[2] ."</td>"; ?>
-                        <?php if ($row[4] != '') {
-                                // echo "<td>". $row[4] ."</td>";
-                                $prevRoute = $row[4];
-                              }
-                            }
-                            else if ($mismatch > 3){
-                              if ($route != $prevRoute) {
-                                echo "<tr class='bg-dark text-white'>";
-                                echo "<td>".$route."</td>";
-                                echo "<td>----</td>";
-                                echo "<td>----</td>";
-                              }
-                              echo "<tr class='table-danger'>";
-                              echo "<td>". $row[0] ."</td>";
-                              echo "<td>". $row[1] ."</td>";
-                              echo "<td>". $row[2] ."</td>";
-                              if ($row[4] != '') {
-                                // echo "<td>". $row[4] ."</td>";
-                                $prevRoute = $row[4];
+                        <?php echo "<td>". $row['address'] ."</td>"; ?>
+                        <?php echo "<td>". $row['col2'] ."</td>"; ?>
+                        <?php echo "<td>". $row['col3'] ."</td>"; ?>
+                        <?php if ($row['route'] != '') {
+                                // echo "<td>". $row['route'] ."</td>";
+                                $prevRoute = $row['route'];
                               }
                             }
                             else {
                               if ($route != $prevRoute) {
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
-                                echo "<td>----</td>";
-                                echo "<td>----</td>";
+                                if (array_key_exists($route, $totalRow)) {
+                                  echo "<td>".$totalRow[$route]['scan']."</td>";
+                                  echo "<td>".$totalRow[$route]['prom']."</td>";
+                                }
+                                else {
+                                  echo "<td>----</td>";
+                                  echo "<td>----</td>";
+                                }
                               }
-                              echo "<tr class='table-warning'>";
-                              echo "<td>". $row[0] ."</td>";
-                              echo "<td>". $row[1] ."</td>";
-                              echo "<td>". $row[2] ."</td>";
-                              if ($row[4] != '') {
-                                // echo "<td>". $row[4] ."</td>";
-                                $prevRoute = $row[4];
+                              echo "<tr class='table-secondary'>";
+                              echo "<td><b><i>". $row['address'] ."</i></b></td>";
+                              echo "<td><b><i>". $row['col2'] ."</i></b></td>";
+                              echo "<td><b><i>". $row['col3'] ."</i></b></td>";
+                              if ($row['route'] != '') {
+                                // echo "<td>". $row['route'] ."</td>";
+                                $prevRoute = $row['route'];
                               }
                             }?>
                     </tr>
                   </tbody>
-                <?php }} ?>
+                <?php $i++;}} ?>
               </tbody>
             </table>
           </div>

@@ -5,8 +5,6 @@ require 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 $app = new \Slim\Slim();
 date_default_timezone_set('America/Los_Angeles');
-// header("Access-Control-Allow-Origin: *");
-
 
 $app->get('/reports', function () use ($app) {
 	$routes = ['6B2D4159-8006-439A-8C0E-B4039257C076'=>'MT01', '0006E4DB-AE26-44C4-97B3-F3C479C4E53D'=>'MT02',
@@ -36,17 +34,14 @@ $app->get('/reports', function () use ($app) {
 	$conn = getconnection();
 	$query = "TRUNCATE TABLE results"; // clear result table for new entries
 	$execute = $conn->query($query);
+	$array = array();
 	if (isset($_GET['route']) && $_GET['route'] != '' ) { //if a route is provided, go here
 		//declare variables before loop to prevent deletion of content
-		$addrs = array();
-
+		// $addrs = array();
 		foreach ($_GET['route'] as $route) { //loops through each route provided
-			// $routeQuery = "SELECT InstanceID FROM spot_route WHERE RouteName LIKE '".$route."'";
-			// $routeResult = $conn->query($routeQuery);
-			// $rrRow = mysqli_fetch_row($routeResult);
 			$routeId = $routesRev[$route]; // translates route name to routeId to be used in spot_invoice
 
-			$query = "SELECT DISTINCT(Address1), count(*) FROM spot_invoice WHERE DATE(PromisedDate) = '".$date."' AND Route_ID = '".$routeId."' AND Voided=0 AND Route_ID
+			$query = "SELECT DISTINCT(Address1), count(*), Route_ID FROM spot_invoice WHERE DATE(PromisedDate) = '".$date."' AND Route_ID = '".$routeId."' AND Voided=0 AND Route_ID
 			IN (SELECT InstanceID FROM spot_route WHERE Active=1) AND closet_barcode NOT LIKE 'UNKNOWN' GROUP BY Address1";
 			$result = $conn->query($query); //get address and promised columns
 			$query2 = "SELECT DISTINCT(spot_group), count(*) FROM spot_invoice_driver_audit WHERE
@@ -54,27 +49,56 @@ $app->get('/reports', function () use ($app) {
 			$result2 = $conn->query($query2); //get scanned column
 			$i = 1;
 
-			$query = "INSERT INTO results (address, loweredit, col2, date, route) VALUES(?,?,?,?,?)"; //enter a row into results table
-			$stmt = $conn->prepare($query);
-			$editQuery = "UPDATE results SET col3 =? WHERE loweredit =?"; // add col3 to above row
-			$edit = $conn->prepare($editQuery);
+			// $query = "INSERT INTO results (address, loweredit, col2, date, route) VALUES(?,?,?,?,?)"; //enter a row into results table
+			// $stmt = $conn->prepare($query);
+			// $editQuery = "UPDATE results SET col3 =? WHERE loweredit =?"; // add col3 to above row
+			// $edit = $conn->prepare($editQuery);
 			while ($row = mysqli_fetch_row($result)) { // put the appropriate address and promised columns with correct row
-
-				$addrs[$i] = strtolower($row[0]);
-				$stmt->bind_param("sssss", $row[0], $addrs[$i], $row[1], $date, $route);
-				$stmt->execute();
+				$array[] = ["address"=>$row[0], "col2"=>$row[1], "col3"=>'', "date"=>$date, "route"=>$route, "lower"=>strtolower($row[0])];
+				// $addrs[$i] = strtolower($row[0]);
+				// $stmt->bind_param("sssss", $row[0], $addrs[$i], $row[1], $date, $route);
+				// $stmt->execute();
 				$i++;
 			}
+			$i = 1;
 			while ($row = mysqli_fetch_row($result2)) { // put the appropriate scanned column with correct row
-				$key = array_search(strtolower($row[0]), ($addrs));
+				$key = array_search(strtolower($row[0]), array_column($array, 'lower'));
 				if ($key != 0) {
-
+					$array[$key]["col3"] = $row[1];
 					$lc = strtolower($row[0]);
-					$edit->bind_param("ss", $row[1], $lc);
-					$edit->execute();
+					// $edit->bind_param("ss", $row[1], $lc);
+					// $edit->execute();
 				}
+				$i++;
 			}
 		}
+		//array_multisort(array_column($array, 'route'), SORT_ASC, $array);
+		$prevRoute = $array[0]['route'];
+		$scan = 0;
+		$prom = 0;
+		foreach($array as $row) {
+			$route = $row['route'];
+			if ($route == $prevRoute) {
+				$scan = $scan + $row['col2'];
+				$prom = $prom + $row['col3'];
+				$prevRoute = $route;
+			}
+			else {
+				$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+				$scan = $row['col2'];
+				$prom = $row['col3'];
+				$prevRoute = $route;
+			}
+		}
+		$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+		$scan = $row['col2'];
+		$prom = $row['col3'];
+		$fp = fopen('results.json', 'w');
+		fwrite($fp, json_encode($array));
+		fclose($fp);
+		$fp = fopen('totals.json', 'w');
+		fwrite($fp, json_encode($total));
+		fclose($fp);
 	}
 	else { // if a route(s) was not provided, go here
 		// this is almost identical to the above part, but with no route specified
@@ -86,36 +110,64 @@ $app->get('/reports', function () use ($app) {
 		$result2 = $conn->query($query2);
 
 		$i = 1;
-		$addrs = array();
-		$query = "INSERT INTO results (address, loweredit, col2, date, route) VALUES(?,?,?,?,?)";
-		$stmt = $conn->prepare($query);
-		$editQuery = "UPDATE results SET col3 =? WHERE loweredit =?";
-		$edit = $conn->prepare($editQuery);
+		// $addrs = array();
+		// $query = "INSERT INTO results (address, loweredit, col2, date, route) VALUES(?,?,?,?,?)";
+		// $stmt = $conn->prepare($query);
+		// $editQuery = "UPDATE results SET col3 =? WHERE loweredit =?";
+		// $edit = $conn->prepare($editQuery);
 		while ($row = mysqli_fetch_row($result)) {
-			$addrs[$i] = strtolower($row[0]);
+			// $addrs[$i] = strtolower($row[0]);
 			$insRoute = $routes[$row[2]];
-			$stmt->bind_param("sssss", $row[0], $addrs[$i], $row[1], $date, $insRoute);
-			$stmt->execute();
+			$array[] = ["address"=>$row[0], "col2"=>$row[1], "col3"=>'', "date"=>$date, "route"=>$insRoute, "lower"=>strtolower($row[0])];
+			// $stmt->bind_param("sssss", $row[0], $addrs[$i], $row[1], $date, $insRoute);
+			// $stmt->execute();
 			$i++;
 		}
 		$i = 1;
 
 		while ($row = mysqli_fetch_row($result2)) {
-			$key = array_search(strtolower($row[0]), ($addrs));
+			$key = array_search(strtolower($row[0]), array_column($array, 'lower'));
 			if ($key != 0) {
-
+				$array[$key]['col3'] = $row[1];
 				$lc = strtolower($row[0]);
-				$edit->bind_param("ss", $row[1], $lc);
-				$edit->execute();
+				// $edit->bind_param("ss", $row[1], $lc);
+				// $edit->execute();
+			}
+			$i++;
+		}
+		array_multisort(array_column($array, 'route'), SORT_ASC, $array);
+		$prevRoute = $array[0]['route'];
+		$scan = 0;
+		$prom = 0;
+		foreach($array as $row) {
+			$route = $row['route'];
+			if ($route == $prevRoute) {
+				$scan = $scan + $row['col2'];
+				$prom = $prom + $row['col3'];
+				$prevRoute = $route;
+			}
+			else {
+				$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+				$scan = $row['col2'];
+				$prom = $row['col3'];
+				$prevRoute = $route;
 			}
 		}
+		$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+		$scan = $row['col2'];
+		$prom = $row['col3'];
+		$fp = fopen('results.json', 'w');
+		fwrite($fp, json_encode($array));
+		fclose($fp);
+		$fp = fopen('totals.json', 'w');
+		fwrite($fp, json_encode($total));
+		fclose($fp);
 	}
-	include '../index.html.php';
 });
 
 $app->run();
 function getconnection(){
-    global $db_host, $db_user, $db_pass, $db_name;
+    global $db_host, $db_user, $db_name;
     $conn = mysqli_connect($db_host, $db_user, '', $db_name) or die("Error " . mysqli_error($conn));
     $conn->set_charset("latin1");
     return $conn;
