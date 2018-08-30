@@ -6,7 +6,7 @@ require 'Slim/Slim.php';
 $app = new \Slim\Slim();
 date_default_timezone_set('America/Los_Angeles');
 
-$app->get('/reports', function () use ($app) {
+$app->get('/', function () use ($app) {
 	$routes = ['6B2D4159-8006-439A-8C0E-B4039257C076'=>'MT01', '0006E4DB-AE26-44C4-97B3-F3C479C4E53D'=>'MT02',
 	'B865C749-A097-4857-AD2F-08A3CF8D32DD'=>'MT03', 'B8A4EB91-D297-4DE5-AB59-A938E6E5F587'=>'TF01', '87CC1001-BA58-454E-B283-8F3A5167A116'=>'TF02',
 	'B12EC75A-F770-4C5D-B66F-328DEB495BA2'=>'TF03', '0D39F12E-23AB-4674-88A8-74FD7E951372'=>'Oracle', '24547E17-292B-4711-A272-672F493F5971'=>'Facebook*',
@@ -53,52 +53,53 @@ $app->get('/reports', function () use ($app) {
 			// $stmt = $conn->prepare($query);
 			// $editQuery = "UPDATE results SET col3 =? WHERE loweredit =?"; // add col3 to above row
 			// $edit = $conn->prepare($editQuery);
-			while ($row = mysqli_fetch_row($result)) { // put the appropriate address and promised columns with correct row
-				$array[] = ["address"=>$row[0], "col2"=>$row[1], "col3"=>'', "date"=>$date, "route"=>$route, "lower"=>strtolower($row[0])];
+			while ($row = mysqli_fetch_row($result)) {
 				// $addrs[$i] = strtolower($row[0]);
-				// $stmt->bind_param("sssss", $row[0], $addrs[$i], $row[1], $date, $route);
+				$array[] = ["address"=>$row[0], "col2"=>$row[1], "col3"=>'', "date"=>$date, "route"=>$route, "lower"=>strtolower($row[0])];
+				// $stmt->bind_param("sssss", $row[0], $addrs[$i], $row[1], $date, $insRoute);
 				// $stmt->execute();
 				$i++;
 			}
 			$i = 1;
-			while ($row = mysqli_fetch_row($result2)) { // put the appropriate scanned column with correct row
+
+			while ($row = mysqli_fetch_row($result2)) {
 				$key = array_search(strtolower($row[0]), array_column($array, 'lower'));
-				if ($key != 0) {
-					$array[$key]["col3"] = $row[1];
+				 if ($key !== false) {
+					$array[$key]['col3'] = $row[1];
 					$lc = strtolower($row[0]);
 					// $edit->bind_param("ss", $row[1], $lc);
 					// $edit->execute();
-				}
+				 }
 				$i++;
 			}
 		}
-		//array_multisort(array_column($array, 'route'), SORT_ASC, $array);
-		$prevRoute = $array[0]['route'];
-		$scan = 0;
-		$prom = 0;
-		foreach($array as $row) {
-			$route = $row['route'];
-			if ($route == $prevRoute) {
-				$scan = $scan + $row['col2'];
-				$prom = $prom + $row['col3'];
-				$prevRoute = $route;
+			// array_multisort(array_column($array, 'route'), SORT_ASC, $array);
+			$prevRoute = $array[0]['route'];
+			$scan = 0;
+			$prom = 0;
+			foreach($array as $row) {
+				$route = $row['route'];
+				if ($route == $prevRoute) {
+					$scan = $scan + $row['col2'];
+					$prom = $prom + $row['col3'];
+					$prevRoute = $route;
+				}
+				else {
+					$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+					$scan = $row['col2'];
+					$prom = $row['col3'];
+					$prevRoute = $route;
+				}
 			}
-			else {
-				$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
-				$scan = $row['col2'];
-				$prom = $row['col3'];
-				$prevRoute = $route;
-			}
-		}
-		$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
-		$scan = $row['col2'];
-		$prom = $row['col3'];
-		$fp = fopen('results.json', 'w');
-		fwrite($fp, json_encode($array));
-		fclose($fp);
-		$fp = fopen('totals.json', 'w');
-		fwrite($fp, json_encode($total));
-		fclose($fp);
+			$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+			$scan = $row['col2'];
+			$prom = $row['col3'];
+			$fp = fopen('results.json', 'w');
+			fwrite($fp, json_encode($array));
+			fclose($fp);
+			$fp = fopen('totals.json', 'w');
+			fwrite($fp, json_encode($total));
+			fclose($fp);
 	}
 	else { // if a route(s) was not provided, go here
 		// this is almost identical to the above part, but with no route specified
@@ -127,7 +128,7 @@ $app->get('/reports', function () use ($app) {
 
 		while ($row = mysqli_fetch_row($result2)) {
 			$key = array_search(strtolower($row[0]), array_column($array, 'lower'));
-			if ($key != 0) {
+			if ($key !== false) {
 				$array[$key]['col3'] = $row[1];
 				$lc = strtolower($row[0]);
 				// $edit->bind_param("ss", $row[1], $lc);

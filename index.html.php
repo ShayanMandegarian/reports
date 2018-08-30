@@ -9,41 +9,66 @@
   <title>Reports</title>
 
   <style>
+
+  ::selection {
+    background: #8f61e5; /* WebKit/Blink Browsers */
+    color:#fff;
+  }
+  ::-moz-selection {
+    background: #8f61e5; /* Gecko Browsers */
+    color:#fff;
+  }
   .btn-custom { /* css for purple search button */
           background-color:#8f61e5 !important;
           color: #fff !important;
+  }
+  .btn-custom:focus, .btn-custom:active {
+    border-color: #CCCCFF;
   }
   #myForm select {
     width:1550px; }
 
   #loader {
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   z-index: 1;
   width: 150px;
   height: 150px;
   margin: -75px 0 0 -75px;
-  border: 16px solid #CCCCFF;
+  border: 36px groove #CCCCFF;
   border-radius: 50%;
-  border-top: 16px solid #8f61e5;
-  border-bottom: 16px solid #8f61e5;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 1s linear infinite;
-  animation: spin 1s linear infinite;
-}
+  border-top: 36px groove #8f61e5;
+  border-bottom: 36px groove #8f61e5;
+  width: 220px;
+  height: 220px;
+  -webkit-animation: spin 1.2s infinite;
+  animation: spin 1.2s  infinite;
+  }
 
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(359.9999999999deg); }
+  }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(359.99999999999deg); }
+  }
 
+  input[type=date]:focus, input[type=date]:hover {
+    border-color: #8f61e5;
+    box-shadow: 2px 2px 1px 1px #8f61e5;
+  }
+  select:hover, select[multiple]:focus{
+    border-color: #8f61e5;
+    box-shadow: 2px 2px 1px 1px #8f61e5;
+  }
+  select[multiple] option:checked {
+    color: #8f61e5;
+    border-color: #8f61e5;
+    box-shadow: 2px 2px 1px 1px #8f61e5;
+  }
   </style>
   <script>
   var subbed = 0;
@@ -59,17 +84,23 @@
   <div id="loader"></div>
   <div id="content" class="wrapper">
     <div class="container-fluid">
-      <div class="row">
-        <div class="page-header clearfix">
-          <div class="col-md-12">
+      <div class="page-header clearfix">
+        <div class="row">
+          <div class="col-sm">
             <h2 class="pull-left">Search Reports</h2>
           </div>
+          <div class="col-sm-2" style="margin:5px">
+            <div class="text-right">
+              <a href="http://localhost/dashboard/guide.html" class="btn btn-custom btn-md">Guide</a>
+            </div>
+          </div>
+        </div>
            <!-- onsubmit="setTimeout(function () { window.location.reload(); }, 12000)" -->
-          <form action="http://localhost/dashboard/server/index.php/reports" id="myForm" method="GET">
-          <div class="col-md-12">
+          <form action="http://localhost/dashboard/server/index.php/" id="myForm" method="GET">
+          <div class="col-sm">
             <div class="form-group" style="width:100%; box-sizing: border-box;">
               <span>Date:</span>
-              <input type="date" min="2000-01-01" max="2050-01-01" name="date" placeholder="mm/dd/yyyy" class="form-control"
+              <input type="date" min="2014-01-01" max="2030-01-01" name="date" placeholder="mm/dd/yyyy" class="form-control"
               required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity(''); subbed = 1;">
             </div>
             <div class="form-group">
@@ -104,12 +135,13 @@
                 <option value="StorageDonations">StorageDonations</option>
               </select>
             </div>
-            <div><button id="buttin" type="submit" style="width:100%; box-sizing: border-box;" class='btn btn-lg btn-custom'>Search</button></div>
+            <div class="text-center"><button id="buttin" type="submit" style="width:75%; box-sizing: border-box; text-align: center;" class='btn btn-lg btn-custom'><u>Search</u></button></div>
           </form>
+          <br>
           </div>
         </div>
       </div>
-    </div>
+    <!-- </div> -->
     <?php
     $valid = 0;
     $row = json_decode(file_get_contents("server/results.json"), true);

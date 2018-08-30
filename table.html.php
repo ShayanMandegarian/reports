@@ -16,7 +16,7 @@
           <div class="page-header clearfix">
             <h2 class="pull-left">Report Details
             <?PHP if ($valid == 1)
-                    echo "for ".date("m/d/Y", strtotime($rows[1]['date']));
+                    echo "for ".date("m/d/Y", strtotime($rows[0]['date']));
             ?></h2>
             <table class="table table-hover">
               <thead>
@@ -31,7 +31,7 @@
               <tbody>
                 <?php if ($valid == 1) {
                         $prevRoute = '';
-                        $i = 1;
+                        // $i = 1;
                         foreach($rows as $row) {
                           $mismatch = 0;
                           $route = $row['route'];
@@ -85,7 +85,8 @@
                             }?>
                     </tr>
                   </tbody>
-                <?php $i++;}} ?>
+                <?php //$i++;
+              }} ?>
               </tbody>
             </table>
           </div>
