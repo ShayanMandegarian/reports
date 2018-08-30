@@ -47,7 +47,8 @@
   </style>
   <script>
   var subbed = 0;
-  var time = 12000;
+  var multi = 0;
+  var time = 15000;
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
@@ -73,7 +74,7 @@
             </div>
             <div class="form-group">
               <span>Route: (optional) ctrl+click to unselect</span>
-              <select name="route[]" class="form-control" multiple style="width:100%; box-sizing: border-box;">
+              <select name="route[]" id="sel" class="form-control" multiple style="width:100%; box-sizing: border-box;" oninput="multi = 1;">
                 <option value="Apple">Apple</option> <!-- All the routes marked as active -->
                 <option value="Facebook">Facebook</option>
                 <option value="Facebook*">Facebook*</option>
@@ -130,10 +131,22 @@
   function showLoad() {
     // console.log(subbed);
     if (subbed == 1) {
-      // console.log("biglulz");
-      jQuery('#content').fadeOut(1500);
-      jQuery('#loader').fadeIn(1500);
-      setTimeout(function () { window.location.reload(); }, 15000);
+      if (multi == 1) {
+        var options = document.getElementById('sel').options, count = 0;
+        for (var i=0; i < options.length; i++) {
+          if (options[i].selected) count++;
+        }
+        time = 5000 * count;
+        console.log(time);
+        jQuery('#content').fadeOut(1500);
+        jQuery('#loader').fadeIn(1500);
+        setTimeout(function () { window.location.reload(); }, time);
+      }
+      else {
+        jQuery('#content').fadeOut(1500);
+        jQuery('#loader').fadeIn(1500);
+        setTimeout(function () { window.location.reload(); }, time);
+      }
     };
   };
   </script>
