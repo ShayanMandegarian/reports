@@ -73,7 +73,7 @@
   <script>
   var subbed = 0;
   var multi = 0;
-  var time = 15000;
+  var time = 15555;
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
@@ -168,7 +168,7 @@
         for (var i=0; i < options.length; i++) {
           if (options[i].selected) count++;
         }
-        time = 5000 * count;
+        time = 5800 * count;
         console.log(time);
         jQuery('#content').fadeOut(1500);
         jQuery('#loader').fadeIn(1500);

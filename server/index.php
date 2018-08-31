@@ -35,6 +35,7 @@ $app->get('/', function () use ($app) {
 	$query = "TRUNCATE TABLE results"; // clear result table for new entries
 	$execute = $conn->query($query);
 	$array = array();
+	$total = array();
 	if (isset($_GET['route']) && $_GET['route'] != '' ) { //if a route is provided, go here
 		//declare variables before loop to prevent deletion of content
 		// $addrs = array();
@@ -53,9 +54,11 @@ $app->get('/', function () use ($app) {
 			// $stmt = $conn->prepare($query);
 			// $editQuery = "UPDATE results SET col3 =? WHERE loweredit =?"; // add col3 to above row
 			// $edit = $conn->prepare($editQuery);
+			$valid = 0;
 			while ($row = mysqli_fetch_row($result)) {
 				// $addrs[$i] = strtolower($row[0]);
 				$array[] = ["address"=>$row[0], "col2"=>$row[1], "col3"=>'', "date"=>$date, "route"=>$route, "lower"=>strtolower($row[0])];
+				$valid = 1;
 				// $stmt->bind_param("sssss", $row[0], $addrs[$i], $row[1], $date, $insRoute);
 				// $stmt->execute();
 				$i++;
@@ -74,26 +77,31 @@ $app->get('/', function () use ($app) {
 			}
 		}
 			// array_multisort(array_column($array, 'route'), SORT_ASC, $array);
-			$prevRoute = $array[0]['route'];
-			$scan = 0;
-			$prom = 0;
-			foreach($array as $row) {
-				$route = $row['route'];
-				if ($route == $prevRoute) {
-					$scan = $scan + $row['col2'];
-					$prom = $prom + $row['col3'];
-					$prevRoute = $route;
+			if ($valid) {
+				$prevRoute = $array[0]['route'];
+				$scan = 0;
+				$prom = 0;
+				foreach($array as $row) {
+					$route = $row['route'];
+					if ($route == $prevRoute) {
+						$scan = $scan + $row['col2'];
+						$prom = $prom + $row['col3'];
+						$prevRoute = $route;
+					}
+					else {
+						$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+						$scan = $row['col2'];
+						$prom = $row['col3'];
+						$prevRoute = $route;
+					}
 				}
-				else {
-					$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
-					$scan = $row['col2'];
-					$prom = $row['col3'];
-					$prevRoute = $route;
-				}
+				$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
+				$scan = $row['col2'];
+				$prom = $row['col3'];
 			}
-			$total[$prevRoute] = ['scan'=>$scan, 'prom'=>$prom];
-			$scan = $row['col2'];
-			$prom = $row['col3'];
+			else {
+				$array[] = ["address"=>"No Results Found", "col2"=>'----', "col3"=>'----', "date"=>$date, "route"=>$route, "lower"=>strtolower($route)];
+			}
 			$fp = fopen('results.json', 'w');
 			fwrite($fp, json_encode($array));
 			fclose($fp);
