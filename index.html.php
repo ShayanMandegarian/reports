@@ -18,13 +18,11 @@
     background: #8f61e5; /* Gecko Browsers */
     color:#fff;
   }
-  .btn-custom { /* css for purple search button */
+  .btn-custom { /* css for purple button */
           background-color:#8f61e5 !important;
           color: #fff !important;
   }
-  .btn-custom:focus, .btn-custom:active {
-    border-color: #CCCCFF;
-  }
+
   #myForm select {
     width:1550px; }
 
@@ -70,6 +68,7 @@
     box-shadow: 2px 2px 1px 1px #8f61e5;
   }
   </style>
+
   <script>
   var subbed = 0;
   var multi = 0;
@@ -95,12 +94,11 @@
             </div>
           </div>
         </div>
-           <!-- onsubmit="setTimeout(function () { window.location.reload(); }, 12000)" -->
           <form action="http://localhost/dashboard/server/index.php/" id="myForm" method="GET">
           <div class="col-sm">
             <div class="form-group" style="width:100%; box-sizing: border-box;">
               <span>Date:</span>
-              <input type="date" min="2014-01-01" max="2030-01-01" name="date" placeholder="mm/dd/yyyy" class="form-control"
+              <input type="date" min="2014-01-01" max="2029-12-31" name="date" placeholder="mm/dd/yyyy" class="form-control"
               required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity(''); subbed = 1;">
             </div>
             <div class="form-group">
@@ -141,34 +139,24 @@
           </div>
         </div>
       </div>
-    <!-- </div> -->
     <?php
     $valid = 0;
-    $row = json_decode(file_get_contents("server/results.json"), true);
-    $totalRow = json_decode(file_get_contents("server/totals.json"), true);
-    foreach($row as $line) {
-       $valid = 1;
-       $rows[] = $line;
-    }
-    // $link = mysqli_connect('localhost', 'root', '', 'ppt');
-    // $result = mysqli_query($link, 'SELECT address, col2, col3, date, route FROM results ORDER BY route');
-    // while ($row = mysqli_fetch_row($result)) {
-    //    $valid = 1;
-    //    $rows[] = $row;
-    // }
+    $rows = json_decode(file_get_contents("server/results.json"), true); // this file contains data needed for the COMPANY rows of the table
+    $totalRow = json_decode(file_get_contents("server/totals.json"), true); // this file contains data needed for the ROUTE rows of the table
+    if ($rows != '')
+      $valid = 1;
     include 'table.html.php';
     ?>
   </div>
   <script>
   function showLoad() {
-    // console.log(subbed);
     if (subbed == 1) {
       if (multi == 1) {
         var options = document.getElementById('sel').options, count = 0;
         for (var i=0; i < options.length; i++) {
           if (options[i].selected) count++;
         }
-        time = 5800 * count;
+        time = 4800 * count;
         console.log(time);
         jQuery('#content').fadeOut(1500);
         jQuery('#loader').fadeIn(1500);
@@ -181,16 +169,13 @@
       }
     };
   };
-  </script>
-  <script>
-  //  jQuery('#content').hide();
+
     jQuery('#loader').show();
     $(window).load(function() {
         jQuery('#loader').fadeOut(1500);
         jQuery('#content').fadeIn(1500);
     });
-  </script>
-  <script>
+
      var el = document.getElementById("buttin");
      el.addEventListener("click", showLoad, false);
 

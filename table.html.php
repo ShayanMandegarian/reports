@@ -13,7 +13,7 @@
   }
   a:hover {
     color: #8f61e5;
-  }
+  } /* css to make the links text black and turn purple when hovering over */
   </style>
 </head>
 
@@ -36,19 +36,16 @@
                   <th scope="col">Address</th>
                   <th scope="col">Promised</th>
                   <th scope="col">Scanned</th>
-                  <!-- <th scope="col">Route</th> -->
-
                 </tr>
               </thead>
               <tbody>
                 <?php if ($valid == 1) {
                         $prevRoute = '';
-                        // $i = 1;
                         foreach($rows as $row) {
                           $company = $row['address'];
                           $mismatch = 0;
                           $route = $row['route'];
-                        if (($row['col2'] != $row['col3']) /*&& ($row[2] != '')*/) {
+                        if ($row['col2'] != $row['col3']) {
                             $mismatch = abs($row['col2'] - $row['col3']);
                           } ?>
                   <tbody>
@@ -65,14 +62,13 @@
                                   echo "<td>----</td>";
                                 }
                               }
-                              echo "<tr>";?>
-                        <?php echo "<td>"; ?>
-                        <?php echo"<a href='company?date=$currDate&comp=$company'>$company</a>"; ?>
-                        <?php echo "</td>"; ?>
-                        <?php echo "<td>". $row['col2'] ."</td>"; ?>
-                        <?php echo "<td>". $row['col3'] ."</td>"; ?>
-                        <?php if ($row['route'] != '') {
-                                // echo "<td>". $row['route'] ."</td>";
+                              echo "<tr>";
+                         echo "<td>";
+                         echo"<a href='company?date=$currDate&comp=$company'>$company</a>";
+                         echo "</td>";
+                         echo "<td>". $row['col2'] ."</td>";
+                         echo "<td>". $row['col3'] ."</td>";
+                         if ($row['route'] != '') {
                                 $prevRoute = $row['route'];
                               }
                             }
@@ -96,14 +92,12 @@
                               echo "<td><b><i>". $row['col2'] ."</i></b></td>";
                               echo "<td><b><i>". $row['col3'] ."</i></b></td>";
                               if ($row['route'] != '') {
-                                // echo "<td>". $row['route'] ."</td>";
                                 $prevRoute = $row['route'];
                               }
                             }?>
                     </tr>
                   </tbody>
-                <?php //$i++;
-              }} ?>
+                <?php }} ?>
               </tbody>
             </table>
           </div>

@@ -8,7 +8,7 @@
   <title>Reports</title>
 
   <style>
-  .btn-custom { /* css for purple search button */
+  .btn-custom { /* css for purple button */
           background-color:#8f61e5 !important;
           color: #fff !important;
   }
@@ -18,7 +18,6 @@
 <?PHP
   $date = $_GET['date'];
   $comp = $_GET['comp'];
-  // echo $date, $comp;
   $link = mysqli_connect('localhost', 'root', '', 'ppt');
   $query = "select created_on, InvoiceKey, status, phone, EMailAddress, first_name, username, Address1
   FROM spot_invoice_driver_audit WHERE date(created_on)='".$date."' and spot_group='".$comp."' ORDER BY created_on asc";
@@ -39,7 +38,7 @@
           <div class="page-header clearfix">
             <table class="table table-hover table-striped">
               <thead>
-                <tr>
+                <tr class='bg-dark text-white'>
                   <th scope="col">Scan DateTime</th>
                   <th scope="col">Invoice Key</th>
                   <th scope="col">Status</th>
