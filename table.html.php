@@ -6,6 +6,15 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <meta charset="utf-8" />
   <title>Reports</title>
+
+  <style>
+  a {
+    color: black;
+  }
+  a:hover {
+    color: #8f61e5;
+  }
+  </style>
 </head>
 
 <body>
@@ -15,15 +24,18 @@
         <div class="col-md-12">
           <div class="page-header clearfix">
             <h2 class="pull-left">Report Details
-            <?PHP if ($valid == 1)
+            <?PHP if ($valid == 1) {
                     echo "for ".date("m/d/Y", strtotime($rows[0]['date']));
+                    $currDate = $rows[0]['date'];
+                  }
+
             ?></h2>
             <table class="table table-hover">
               <thead>
                 <tr>
                   <th scope="col">Address</th>
-                  <th scope="col">Scanned</th>
                   <th scope="col">Promised</th>
+                  <th scope="col">Scanned</th>
                   <!-- <th scope="col">Route</th> -->
 
                 </tr>
@@ -33,6 +45,7 @@
                         $prevRoute = '';
                         // $i = 1;
                         foreach($rows as $row) {
+                          $company = $row['address'];
                           $mismatch = 0;
                           $route = $row['route'];
                         if (($row['col2'] != $row['col3']) /*&& ($row[2] != '')*/) {
@@ -53,7 +66,9 @@
                                 }
                               }
                               echo "<tr>";?>
-                        <?php echo "<td>". $row['address'] ."</td>"; ?>
+                        <?php echo "<td>"; ?>
+                        <?php echo"<a href='company?date=$currDate&comp=$company'>$company</a>"; ?>
+                        <?php echo "</td>"; ?>
                         <?php echo "<td>". $row['col2'] ."</td>"; ?>
                         <?php echo "<td>". $row['col3'] ."</td>"; ?>
                         <?php if ($row['route'] != '') {
@@ -75,7 +90,9 @@
                                 }
                               }
                               echo "<tr class='table-secondary'>";
-                              echo "<td><b><i>". $row['address'] ."</i></b></td>";
+                              echo "<td><b><i>";
+                              echo "<a href='company?date=$currDate&comp=$company'>$company</a>";
+                              echo "</i></b></td>";
                               echo "<td><b><i>". $row['col2'] ."</i></b></td>";
                               echo "<td><b><i>". $row['col3'] ."</i></b></td>";
                               if ($row['route'] != '') {
