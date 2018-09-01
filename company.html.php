@@ -51,7 +51,9 @@
               </thead>
               <tbody>
                 <?php
-                while ($row = mysqli_fetch_array($result)) { ?>
+                $content = 0;
+                while ($row = mysqli_fetch_array($result)) {
+                  $content = 1; ?>
                   <tr>
                     <?php $date = date("m/d/Y g:i:s A", strtotime($row[0])); ?>
                     <td><?php echo $date; ?></td>
@@ -67,6 +69,19 @@
                     <td><?php echo $row[5]; ?></td>
                     <td><?php echo $row[6]; ?></td>
                     <td><?php echo $row[7]; ?></td>
+                  </tr>
+                <?php }
+                if (!$content) {
+                  echo "<tr>";
+                    // $date = date("m/d/Y g:i:s A", strtotime($row[0])); ?>
+                    <td><?php echo "None"; ?></td>
+                    <td><?php echo "None"; ?></td>
+                    <td><?php echo "None"; ?></td>
+                    <td><?php echo "None"; ?></td>
+                    <td><?php echo "None"; ?></td>
+                    <td><?php echo "None"; ?></td>
+                    <td><?php echo "None"; ?></td>
+                    <td><?php echo "None"; ?></td>
                   </tr>
                 <?php } ?>
               </tbody>
