@@ -8,6 +8,16 @@
   <title>Reports</title>
 
   <style>
+
+  ::selection {
+    background: #8f61e5; /* WebKit/Blink Browsers */
+    color:#fff;
+  }
+  ::-moz-selection {
+    background: #8f61e5; /* Gecko Browsers */
+    color:#fff;
+  }
+
   .btn-custom { /* css for purple button */
           background-color:#8f61e5 !important;
           color: #fff !important;
@@ -43,12 +53,16 @@
 
 </head>
 <?PHP
+  $ids = array();
   $date = $_GET['date'];
   $comp = $_GET['comp'];
   $link = mysqli_connect('localhost', 'root', '', 'ppt');
   $query = "select created_on, InvoiceKey, status, phone, EmailAddress, first_name, username, Address1
   FROM spot_invoice_driver_audit WHERE date(created_on)='".$date."' and spot_group='".$comp."' ORDER BY created_on asc"; // gather the needed columns for the company/date
   $result = mysqli_query($link, $query);
+
+  $query2 = "select InvoiceKey FROM spot_invoice WHERE date(PromisedDate) = '".$date."' AND Address1='".$comp."' AND voided=0";
+  $result2 = mysqli_query($link, $query2);
 ?>
 <body>
   <div id="loader"></div>
@@ -57,7 +71,7 @@
     <div class="container-fluid">
       <div class="col-sm">
         <div class="row">
-          <h2>Invoices for <?php echo date("m/d/Y", strtotime($date)); ?> at <?php echo $comp; ?> </h2> <!-- Creates a presentable header with company and date -->
+          <h2>Scanned Invoices for <?php echo date("m/d/Y", strtotime($date)); ?> at <?php echo $comp; ?> </h2> <!-- Creates a presentable header with company and date -->
           <div class="col-sm" style="margin:5px">
             <div class="container-fluid">
               <button onclick="jQuery('#content').fadeOut(1500); jQuery('#loader').fadeIn(1500); window.history.back();" class="btn btn-custom btn-md float-right">Back</button>
@@ -82,7 +96,8 @@
                 <?php
                 $content = 0;
                 while ($row = mysqli_fetch_array($result)) {
-                  $content = 1; ?>
+                  $content = 1;
+                  $ids[] = $row[1]; ?>
                   <tr>
                     <?php $date = date("m/d/Y g:i:s A", strtotime($row[0])); ?> <!-- translates datetime to presentable format -->
                     <td><?php echo $date; ?></td>
@@ -115,6 +130,31 @@
                 <?php } ?>
               </tbody>
             </table>
+          </div>
+        </div>
+        <?php
+        $first = 1;
+        while ($row = mysqli_fetch_array($result2)) {
+          if (!in_array($row[0], $ids)) {
+            if ($first) { ?>
+        <h2>Non-Scanned Invoices for <?php echo date("m/d/Y", strtotime($date)); ?> at <?php echo $comp; ?></h2>
+          <div class="col-sm">
+            <table class="table table-hover table-striped">
+              <thead>
+                <tr class='bg-dark text-white'>
+                  <th scope="col">Invoice Key</th>
+                </tr>
+              </thead>
+            <?php } $first = 0; ?>
+              <tbody>
+                    <tr>
+                      <td><?php echo $row[0]; ?></td>
+                    </tr>
+          <?php  }
+                } ?>
+              </tbody>
+            </table>
+          </div>
           </div>
         </div>
       </div>
