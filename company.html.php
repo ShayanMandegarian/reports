@@ -46,8 +46,8 @@
   $date = $_GET['date'];
   $comp = $_GET['comp'];
   $link = mysqli_connect('localhost', 'root', '', 'ppt');
-  $query = "select created_on, InvoiceKey, status, phone, EMailAddress, first_name, username, Address1
-  FROM spot_invoice_driver_audit WHERE date(created_on)='".$date."' and spot_group='".$comp."' ORDER BY created_on asc";
+  $query = "select created_on, InvoiceKey, status, phone, EmailAddress, first_name, username, Address1
+  FROM spot_invoice_driver_audit WHERE date(created_on)='".$date."' and spot_group='".$comp."' ORDER BY created_on asc"; // gather the needed columns for the company/date
   $result = mysqli_query($link, $query);
 ?>
 <body>
@@ -57,7 +57,7 @@
     <div class="container-fluid">
       <div class="col-sm">
         <div class="row">
-          <h2>Invoices for <?php echo date("m/d/Y", strtotime($date)); ?> at <?php echo $comp; ?> </h2>
+          <h2>Invoices for <?php echo date("m/d/Y", strtotime($date)); ?> at <?php echo $comp; ?> </h2> <!-- Creates a presentable header with company and date -->
           <div class="col-sm" style="margin:5px">
             <div class="container-fluid">
               <button onclick="jQuery('#content').fadeOut(1500); jQuery('#loader').fadeIn(1500); window.history.back();" class="btn btn-custom btn-md float-right">Back</button>
@@ -84,7 +84,7 @@
                 while ($row = mysqli_fetch_array($result)) {
                   $content = 1; ?>
                   <tr>
-                    <?php $date = date("m/d/Y g:i:s A", strtotime($row[0])); ?>
+                    <?php $date = date("m/d/Y g:i:s A", strtotime($row[0])); ?> <!-- translates datetime to presentable format -->
                     <td><?php echo $date; ?></td>
                     <td><?php echo $row[1]; ?></td>
                     <td><?php echo $row[2]; ?></td>
@@ -92,7 +92,8 @@
                     $phone = sprintf("(%s) %s-%s",
                                   substr($row[3], 0, 3),
                                   substr($row[3], 3, 3),
-                                  substr($row[3], 6, 4)); ?>
+                                  substr($row[3], 6, 4));
+                                  // translates phone number to presentable format?>
                     <td><?php echo $phone; ?></td>
                     <td><?php echo $row[4]; ?></td>
                     <td><?php echo $row[5]; ?></td>
@@ -100,9 +101,8 @@
                     <td><?php echo $row[7]; ?></td>
                   </tr>
                 <?php }
-                if (!$content) {
-                  echo "<tr>";
-                    // $date = date("m/d/Y g:i:s A", strtotime($row[0])); ?>
+                if (!$content) { // placeholder if company has no scanned invoices
+                  echo "<tr>"; ?>
                     <td><?php echo "None"; ?></td>
                     <td><?php echo "None"; ?></td>
                     <td><?php echo "None"; ?></td>

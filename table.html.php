@@ -24,11 +24,9 @@
         <div class="col-md-12">
           <div class="page-header clearfix">
             <h2 class="pull-left">Report Details
-            <?PHP //if (true) {
-                    echo "for ".date("m/d/Y", strtotime($date));
-                    $currDate = $date;
-                  //}
-
+            <?PHP
+            echo "for ".date("m/d/Y", strtotime($date)); // convert date to a presentable format
+            $currDate = $date;
             ?></h2>
             <table class="table table-hover">
               <thead>
@@ -39,18 +37,18 @@
                 </tr>
               </thead>
               <tbody>
-                <?php //if (true) {
+                <?php
                         $prevRoute = '';
                         foreach($array as $row) {
-                          if ($routeGiven == 0 || ($routeGiven == 1 && in_array($row['route'], $routes))) {
+                          if ($routeGiven == 0 || ($routeGiven == 1 && in_array($row['route'], $routes))) { // if no routes given, or the current row has a route that was searched for
                           $company = $row['address'];
                           $mismatch = 0;
                           $route = $row['route'];
                         if ($row['col2'] != $row['col3']) {
-                            $mismatch = abs($row['col2'] - $row['col3']);
+                            $mismatch = 1); // calculate if col2 and col3 are different
                           } ?>
                   <tbody>
-                      <?php if ($mismatch == 0) {
+                      <?php if ($mismatch == 0) { // if col2 and col3 are the same...
                               if ($route != $prevRoute) {
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
@@ -59,13 +57,13 @@
                                   echo "<td>".$total[$route]['prom']."</td>";
                                 }
                                 else {
-                                  echo "<td>----</td>";
+                                  echo "<td>----</td>"; // placeholder
                                   echo "<td>----</td>";
                                 }
                               }
                               echo "<tr>";
                          echo "<td>";
-                         echo"<a href='company?date=$currDate&comp=$company'>$company</a>";
+                         echo"<a href='company?date=$currDate&comp=$company'>$company</a>"; // makes col1 a link to invoices for that company/date
                          echo "</td>";
                          echo "<td>". $row['col2'] ."</td>";
                          echo "<td>". $row['col3'] ."</td>";
@@ -73,7 +71,7 @@
                                 $prevRoute = $row['route'];
                               }
                             }
-                            else {
+                            else { // if col2 and col3 are different, highlight row
                               if ($route != $prevRoute) {
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
@@ -82,13 +80,13 @@
                                   echo "<td>".$total[$route]['prom']."</td>";
                                 }
                                 else {
-                                  echo "<td>----</td>";
+                                  echo "<td>----</td>"; // placeholder
                                   echo "<td>----</td>";
                                 }
                               }
                               echo "<tr class='table-secondary'>";
                               echo "<td><b><i>";
-                              echo "<a href='company?date=$currDate&comp=$company'>$company</a>";
+                              echo "<a href='company?date=$currDate&comp=$company'>$company</a>"; // makes col1 a link to invoices for that company/date
                               echo "</i></b></td>";
                               echo "<td><b><i>". $row['col2'] ."</i></b></td>";
                               echo "<td><b><i>". $row['col3'] ."</i></b></td>";

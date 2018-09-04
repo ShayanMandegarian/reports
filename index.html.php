@@ -71,7 +71,6 @@
 
   <script>
   var subbed = 0;
-  var multi = 0;
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
@@ -97,12 +96,12 @@
           <div class="col-sm">
             <div class="form-group" style="width:100%; box-sizing: border-box;">
               <span>Date:</span>
-              <input type="date" id='date' min="2014-01-01" max="2018-12-31" name="date" placeholder="mm/dd/yyyy" class="form-control"
+              <input type="date" min="2014-01-01" max="2018-12-31" name="date" placeholder="mm/dd/yyyy" class="form-control"
               required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity(''); subbed = 1;">
             </div>
             <div class="form-group">
               <span>Route: (optional) ctrl+click to unselect</span>
-              <select name="route[]" id="sel" class="form-control" multiple style="width:100%; box-sizing: border-box;" oninput="multi = 1;">
+              <select name="route[]" id="sel" class="form-control" multiple style="width:100%; box-sizing: border-box;">
                 <option value="Apple">Apple</option> <!-- All the routes marked as active -->
                 <option value="Facebook">Facebook</option>
                 <option value="Facebook*">Facebook*</option>
@@ -141,14 +140,14 @@
   </div>
   <script>
   jQuery('#loader').hide();
-  function showLoad() {
+  function showLoad() { // when the search button is pressed AND a date was chosen, fade to loading spinner
     if (subbed == 1) {
       jQuery('#loader').fadeIn(1500);
       jQuery('#content').fadeOut(1500);
     };
   };
 
-   var load = document.getElementById("buttin");
+   var load = document.getElementById("buttin"); // when search button is pressed, call showLoad
    load.addEventListener("click", showLoad, false);
 
    $("#buttin").on("click", showLoad());

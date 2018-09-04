@@ -1,14 +1,12 @@
 <?php
 include_once ('config_db.inc.php');
 include_once ('sec_funcs.php');
-// require 'server/Slim/Slim.php';
-// \Slim\Slim::registerAutoloader();
 
 if (isset($_GET['date'])) {
   $date = $_GET['date'];
 }
 else {
-  header ('Location: .');
+  header ('Location: .'); // if no date is given, (url manually entered wrong) go to dashboard
 }
 $route = ''; // declare route variable
 $routeGiven = 0;
@@ -20,23 +18,23 @@ $routes = array();
 if (isset($_GET['route']) && $_GET['route'] != '' ) { //if a route is provided, go here
   //declare variables before loop to prevent deletion of content
   foreach ($_GET['route'] as $route) {  //loops through each route provided
-    $routes[] = $route;
+    $routes[] = $route; // store given routes to use later in table.html.php
   }
   $routeGiven = 1;
 }
 
 $query = "SELECT Address1, count(*), Route_ID from spot_invoice where date(PromisedDate) = '".$date."'
 and Voided=0 and Route_ID in (select InstanceID from spot_route where Active=1) and closet_barcode not like 'UNKNOWN'
-group by Address1 order by Address1 asc";
+group by Address1 order by Address1 asc"; // query for cols 1 and 2
 $result = $conn->query($query);
 
 $query2 = "SELECT DISTINCT(spot_group), count(*) FROM spot_invoice_driver_audit WHERE
-DATE(created_on) = '".$date."' GROUP BY spot_group";
+DATE(created_on) = '".$date."' GROUP BY spot_group"; // query for col 3
 $result2 = $conn->query($query2);
 
 $valid = 0;
 while ($row = mysqli_fetch_row($result)) {
-  $routeQuery = "SELECT RouteName FROM spot_route WHERE InstanceID LIKE '".$row[2]."'";
+  $routeQuery = "SELECT RouteName FROM spot_route WHERE InstanceID LIKE '".$row[2]."'"; // translate routeName to routeID
   $routeResult = $conn->query($routeQuery);
   $rrRow = mysqli_fetch_row($routeResult);
   $routeId = $rrRow[0];
@@ -53,7 +51,7 @@ while ($row = mysqli_fetch_row($result2)) {
 }
 $conn->close();
 array_multisort(array_column($array, 'route'), SORT_ASC, $array);
-if ($valid) {
+if ($valid) { // if the mysql queries returned anything...
   $prevRoute = $array[0]['route'];
   $scan = 0;
   $prom = 0;
@@ -77,11 +75,11 @@ if ($valid) {
   $scan = $row['col2'];
   $prom = $row['col3'];
 }
-else {
+else { // if no mysqli results, populate array with placeholder
   $array[] = ["address"=>"No Results Found", "col2"=>'----', "col3"=>'----', "date"=>$date, "route"=>$route, "lower"=>strtolower($route)];
 }
 // }
-include 'index2.html.php';
+include 'index2.html.php'; // after array and total are populated, include index2
 
 function getconnection(){
     global $db_host, $db_user, $db_name;
