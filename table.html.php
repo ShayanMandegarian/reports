@@ -45,7 +45,7 @@
                           $mismatch = 0;
                           $route = $row['route'];
                         if ($row['col2'] != $row['col3']) {
-                            $mismatch = 1); // calculate if col2 and col3 are different
+                            $mismatch = 1; // calculate if col2 and col3 are different
                           } ?>
                   <tbody>
                       <?php if ($mismatch == 0) { // if col2 and col3 are the same...
