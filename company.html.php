@@ -12,6 +12,33 @@
           background-color:#8f61e5 !important;
           color: #fff !important;
   }
+  #loader {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 36px groove #CCCCFF;
+  border-radius: 50%;
+  border-top: 36px groove #8f61e5;
+  border-bottom: 36px groove #8f61e5;
+  width: 220px;
+  height: 220px;
+  -webkit-animation: spin 1.2s infinite;
+  animation: spin 1.2s  infinite;
+  }
+
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(359.9999999999deg); }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(359.99999999999deg); }
+  }
   </style>
 
 </head>
@@ -24,6 +51,8 @@
   $result = mysqli_query($link, $query);
 ?>
 <body>
+  <div id="loader"></div>
+  <div id="content">
   <div class="wrapper">
     <div class="container-fluid">
       <div class="col-sm">
@@ -31,7 +60,7 @@
           <h2>Invoices for <?php echo date("m/d/Y", strtotime($date)); ?> at <?php echo $comp; ?> </h2>
           <div class="col-sm" style="margin:5px">
             <div class="container-fluid">
-              <a href="http://localhost/dashboard/" class="btn btn-custom btn-md float-right">Back</a>
+              <button onclick="jQuery('#content').fadeOut(1500); jQuery('#loader').fadeIn(1500); window.history.back();" class="btn btn-custom btn-md float-right">Back</button>
             </div>
           </div>
         </div>
@@ -91,5 +120,8 @@
       </div>
     </div>
   </div>
+  <script>
+    jQuery('#loader').hide();
+  </script>
 </body>
 </html>

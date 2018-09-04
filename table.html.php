@@ -24,9 +24,9 @@
         <div class="col-md-12">
           <div class="page-header clearfix">
             <h2 class="pull-left">Report Details
-            <?PHP if ($valid == 1) {
-                    echo "for ".date("m/d/Y", strtotime($rows[0]['date']));
-                    $currDate = $rows[0]['date'];
+            <?PHP if (true) {
+                    echo "for ".date("m/d/Y", strtotime($date));
+                    $currDate = $date;
                   }
 
             ?></h2>
@@ -41,7 +41,7 @@
               <tbody>
                 <?php if ($valid == 1) {
                         $prevRoute = '';
-                        foreach($rows as $row) {
+                        foreach($array as $row) {
                           $company = $row['address'];
                           $mismatch = 0;
                           $route = $row['route'];
@@ -53,9 +53,9 @@
                               if ($route != $prevRoute) {
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
-                                if (array_key_exists($route, $totalRow)) {
-                                  echo "<td>".$totalRow[$route]['scan']."</td>";
-                                  echo "<td>".$totalRow[$route]['prom']."</td>";
+                                if (array_key_exists($route, $total)) {
+                                  echo "<td>".$total[$route]['scan']."</td>";
+                                  echo "<td>".$total[$route]['prom']."</td>";
                                 }
                                 else {
                                   echo "<td>----</td>";
@@ -76,9 +76,9 @@
                               if ($route != $prevRoute) {
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
-                                if (array_key_exists($route, $totalRow)) {
-                                  echo "<td>".$totalRow[$route]['scan']."</td>";
-                                  echo "<td>".$totalRow[$route]['prom']."</td>";
+                                if (array_key_exists($route, $total)) {
+                                  echo "<td>".$total[$route]['scan']."</td>";
+                                  echo "<td>".$total[$route]['prom']."</td>";
                                 }
                                 else {
                                   echo "<td>----</td>";
