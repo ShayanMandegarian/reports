@@ -98,7 +98,7 @@
           <div class="col-sm">
             <div class="form-group" style="width:100%; box-sizing: border-box;">
               <span>Date:</span>
-              <input type="date" id='date' min="2014-01-01" max="2029-12-31" name="date" placeholder="mm/dd/yyyy" class="form-control"
+              <input type="date" id='date' min="2014-01-01" max="2018-12-31" name="date" placeholder="mm/dd/yyyy" class="form-control"
               required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity(''); subbed=1">
             </div>
             <div class="form-group">
@@ -139,23 +139,24 @@
           </div>
         </div>
       </div>
-<?php
- include 'table.html.php';
-?>
+    <?php
+     include 'table.html.php';
+    ?>
+  </div>
   <script>
     jQuery('#loader').show();
-    $(window).load(function() {
+    $(window).load(function() { // show loading spinner until page loads, then fade
       jQuery('#loader').fadeOut(1500);
       jQuery('#content').fadeIn(1500);
     });
-    function showLoad() {
+    function showLoad() { // when the search button is pressed AND a date was chosen, fade to loading spinner
       if (subbed == 1) {
         jQuery('#loader').fadeIn(1500);
         jQuery('#content').fadeOut(1500);
       };
     };
-    var el = document.getElementById("buttin");
-    el.addEventListener("click", showLoad, false);
+    var load = document.getElementById("buttin"); // when search button is pressed, call showLoad
+    load.addEventListener("click", showLoad, false);
     $("#buttin").on("click", showLoad());
   </script>
 

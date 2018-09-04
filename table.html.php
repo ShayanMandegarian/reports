@@ -24,10 +24,10 @@
         <div class="col-md-12">
           <div class="page-header clearfix">
             <h2 class="pull-left">Report Details
-            <?PHP if (true) {
+            <?PHP //if (true) {
                     echo "for ".date("m/d/Y", strtotime($date));
                     $currDate = $date;
-                  }
+                  //}
 
             ?></h2>
             <table class="table table-hover">
@@ -39,9 +39,10 @@
                 </tr>
               </thead>
               <tbody>
-                <?php if ($valid == 1) {
+                <?php //if (true) {
                         $prevRoute = '';
                         foreach($array as $row) {
+                          if ($routeGiven == 0 || ($routeGiven == 1 && in_array($row['route'], $routes))) {
                           $company = $row['address'];
                           $mismatch = 0;
                           $route = $row['route'];

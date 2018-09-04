@@ -97,7 +97,7 @@
           <div class="col-sm">
             <div class="form-group" style="width:100%; box-sizing: border-box;">
               <span>Date:</span>
-              <input type="date" id='date' min="2014-01-01" max="2029-12-31" name="date" placeholder="mm/dd/yyyy" class="form-control"
+              <input type="date" id='date' min="2014-01-01" max="2018-12-31" name="date" placeholder="mm/dd/yyyy" class="form-control"
               required oninvalid="this.setCustomValidity('Please enter a valid date')" oninput="setCustomValidity(''); subbed = 1;">
             </div>
             <div class="form-group">
@@ -147,15 +147,9 @@
       jQuery('#content').fadeOut(1500);
     };
   };
-  //
-  //   jQuery('#loader').show();
-  // $(window).load(function() {
-  //     jQuery('#loader').fadeOut(1500);
-  //     jQuery('#content').fadeIn(1500);
-  // });
-  //
-   var el = document.getElementById("buttin");
-   el.addEventListener("click", showLoad, false);
+
+   var load = document.getElementById("buttin");
+   load.addEventListener("click", showLoad, false);
 
    $("#buttin").on("click", showLoad());
   </script>
