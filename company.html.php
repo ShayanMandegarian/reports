@@ -5,7 +5,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <meta charset="utf-8" />
-  <title>Reports</title>
+  <title>Invoices</title>
 
   <style>
 
@@ -22,6 +22,7 @@
           background-color:#8f61e5 !important;
           color: #fff !important;
   }
+
   #loader {
   position: fixed;
   left: 50%;
@@ -49,14 +50,17 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(359.99999999999deg); }
   }
+
   </style>
 
 </head>
 <?PHP
+  include_once ('config_db.inc.php');
+  global $db_host, $db_user, $db_name, $db_pass;
   $ids = array();
   $date = $_GET['date'];
   $comp = $_GET['comp'];
-  $link = mysqli_connect('localhost', 'root', '', 'ppt');
+  $link = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
   $query = "select created_on, InvoiceKey, status, phone, EmailAddress, first_name, username, Address1
   FROM spot_invoice_driver_audit WHERE date(created_on)='".$date."' and spot_group='".$comp."' ORDER BY created_on asc"; // gather the needed columns for the company/date
   $result = mysqli_query($link, $query);
@@ -151,7 +155,8 @@
                       <td><?php echo $row[0]; ?></td>
                     </tr>
           <?php  }
-                } ?>
+               }
+                mysqli_close($link); ?>
               </tbody>
             </table>
           </div>

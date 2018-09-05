@@ -82,8 +82,8 @@ else { // if no mysqli results, populate array with placeholder
 include 'index2.html.php'; // after array and total are populated, include index2
 
 function getconnection(){
-    global $db_host, $db_user, $db_name;
-    $conn = mysqli_connect($db_host, $db_user, '', $db_name) or die("Error " . mysqli_error($conn));
+    global $db_host, $db_user, $db_name, $db_pass;
+    $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name) or die("Error " . mysqli_error($conn));
     $conn->set_charset("latin1");
     return $conn;
 }
