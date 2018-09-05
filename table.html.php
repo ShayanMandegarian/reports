@@ -14,6 +14,9 @@
   a:hover {
     color: #8f61e5;
   } /* css to make the links text black and turn purple when hovering over */
+  .purple {
+    color:#8f61e5;
+  }
   </style>
 </head>
 
@@ -28,16 +31,23 @@
             echo "for ".date("m/d/Y", strtotime($date)); // convert date to a presentable format
             $currDate = $date;
             ?></h2>
-            <table class="table table-hover">
+            <table id="table" class="table table-hover">
               <thead>
                 <tr>
                   <th scope="col">Address</th>
                   <th scope="col">Promised</th>
-                  <th scope="col">Scanned</th>
+                  <th scope="col">Delivered</th>
+                  <th scope="col">In Closet</th>
                 </tr>
               </thead>
               <tbody>
-                <?php
+                <tr class='bg-dark text-white'>
+                  <td><b><i>TOTALS:</i></u></td>
+                  <td><b><i><?php echo $grandScan; ?></i></b></td>
+                  <td><b><i><?php echo $grandProm; ?></i></b></td>
+                  <td><b><i><?php echo $grandClos; ?></i></b></td>
+                </tr>
+                        <?php
                         $prevRoute = '';
                         foreach($array as $row) {
                           if ($routeGiven == 0 || ($routeGiven == 1 && in_array($row['route'], $routes))) { // if no routes given, or the current row has a route that was searched for
@@ -54,8 +64,9 @@
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
                                 if (array_key_exists($route, $total)) {
-                                  echo "<td>".$total[$route]['scan']."</td>";
-                                  echo "<td>".$total[$route]['prom']."</td>";
+                                  echo "<td class='scan'>".$total[$route]['scan']."</td>";
+                                  echo "<td class='prom'>".$total[$route]['prom']."</td>";
+                                  echo "<td class='clos'>".$total[$route]['clos']."</td>";
                                 }
                                 else {
                                   echo "<td>----</td>"; // placeholder
@@ -68,6 +79,7 @@
                          echo "</td>";
                          echo "<td>". $row['col2'] ."</td>";
                          echo "<td>". $row['col3'] ."</td>";
+                         echo "<td>". $row['col4'] ."</td>";
                          if ($row['route'] != '') {
                                 $prevRoute = $row['route'];
                               }
@@ -77,8 +89,9 @@
                                 echo "<tr class='bg-dark text-white'>";
                                 echo "<td>".$route."</td>";
                                 if (array_key_exists($route, $total)) {
-                                  echo "<td>".$total[$route]['scan']."</td>";
-                                  echo "<td>".$total[$route]['prom']."</td>";
+                                  echo "<td class='scan'>".$total[$route]['scan']."</td>";
+                                  echo "<td class='prom'>".$total[$route]['prom']."</td>";
+                                  echo "<td class='clos'>".$total[$route]['clos']."</td>";
                                 }
                                 else {
                                   echo "<td>----</td>"; // placeholder
@@ -91,6 +104,7 @@
                               echo "</i></b></td>";
                               echo "<td><b><i>". $row['col2'] ."</i></b></td>";
                               echo "<td><b><i>". $row['col3'] ."</i></b></td>";
+                              echo "<td><b><i>". $row['col4'] ."</i></b></td>";
                               if ($row['route'] != '') {
                                 $prevRoute = $row['route'];
                               }
@@ -105,5 +119,17 @@
       </div>
     </div>
   </div>
+  <script>
+    // $(document).ready(function() {
+    //   var $dataRows=$("#table tr:not('.bg-dark')");
+    //   var col1Total = 0;
+    //
+    //   $dataRows.each(function() {
+    //     var col1 = $(this).find('.scan');
+    //     col1Total += parseInt(scan.html());
+    //   });
+    // });
+    // console.log(col1Total);
+  </script>
 </body>
 </html>
