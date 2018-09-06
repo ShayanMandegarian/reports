@@ -38,6 +38,7 @@
                   <th scope="col">Promised</th>
                   <th scope="col">Delivered</th>
                   <th scope="col">In Closet</th>
+                  <th scope="col">Anomaly</th>
                 </tr>
               </thead>
               <tbody>
@@ -46,6 +47,7 @@
                   <td><b><i><?php echo $grandScan; ?></i></b></td>
                   <td><b><i><?php echo $grandProm; ?></i></b></td>
                   <td><b><i><?php echo $grandClos; ?></i></b></td>
+                  <td><b><i><?php echo $grandAnom; ?></i></b></td>
                 </tr>
                         <?php
                         $prevRoute = '';
@@ -67,9 +69,12 @@
                                   echo "<td class='scan'>".$total[$route]['scan']."</td>";
                                   echo "<td class='prom'>".$total[$route]['prom']."</td>";
                                   echo "<td class='clos'>".$total[$route]['clos']."</td>";
+                                  echo "<td class='clos'>".$total[$route]['anom']."</td>";
                                 }
                                 else {
                                   echo "<td>----</td>"; // placeholder
+                                  echo "<td>----</td>";
+                                  echo "<td>----</td>";
                                   echo "<td>----</td>";
                                 }
                               }
@@ -80,6 +85,10 @@
                          echo "<td>". $row['col2'] ."</td>";
                          echo "<td>". $row['col3'] ."</td>";
                          echo "<td>". $row['col4'] ."</td>";
+                         if (($row['col5'] != 0) || ($row['col5'] === '----'))
+                           echo "<td>". $row['col5'] ."</td>";
+                         else
+                           echo "<td> </td>";
                          if ($row['route'] != '') {
                                 $prevRoute = $row['route'];
                               }
@@ -92,9 +101,12 @@
                                   echo "<td class='scan'>".$total[$route]['scan']."</td>";
                                   echo "<td class='prom'>".$total[$route]['prom']."</td>";
                                   echo "<td class='clos'>".$total[$route]['clos']."</td>";
+                                  echo "<td class='clos'>".$total[$route]['anom']."</td>";
                                 }
                                 else {
                                   echo "<td>----</td>"; // placeholder
+                                  echo "<td>----</td>";
+                                  echo "<td>----</td>";
                                   echo "<td>----</td>";
                                 }
                               }
@@ -105,6 +117,10 @@
                               echo "<td><b><i>". $row['col2'] ."</i></b></td>";
                               echo "<td><b><i>". $row['col3'] ."</i></b></td>";
                               echo "<td><b><i>". $row['col4'] ."</i></b></td>";
+                              if (($row['col5'] != 0) || ($row['col5'] === '----'))
+                                echo "<td><b><i>". $row['col5'] ."</i></b></td>";
+                              else
+                                echo "<td><b><i> </i></b></td>";
                               if ($row['route'] != '') {
                                 $prevRoute = $row['route'];
                               }
@@ -119,17 +135,5 @@
       </div>
     </div>
   </div>
-  <script>
-    // $(document).ready(function() {
-    //   var $dataRows=$("#table tr:not('.bg-dark')");
-    //   var col1Total = 0;
-    //
-    //   $dataRows.each(function() {
-    //     var col1 = $(this).find('.scan');
-    //     col1Total += parseInt(scan.html());
-    //   });
-    // });
-    // console.log(col1Total);
-  </script>
 </body>
 </html>
